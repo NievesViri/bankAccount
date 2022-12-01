@@ -5,43 +5,39 @@ class bankAccount {
     this.transactions = [];
   }
   balance() {
-    let currentBalance = 0;
-    for (let i = 0; i < this.transactions.length; i++) {
-      currentBalance += this.transactions[i].amount;
+    let total = 0;
+    for (let i = this.transactions.length - 1; i >= 0; i--) {
+      total = total + this.transactions[i].amount;
     }
-    return currentBalance;
+    return "Your Current Balance is: " + total;
   }
 
   deposit(amt) {
-    if (amt > 0) {
-      let newDeposit = new Transaction(amt, "Deposit");
-      this.transactions.push(newDeposit);
-    } else {
-      console.log("Invalid Deposit Amount!");
-    }
+    this.transactions.push(
+      new Transaction(this.accountNumber, this.owner, this.owner, amt)
+    );
   }
-
   charge(payee, amt) {
-    let newCharge = new Transaction(amt, payee);
-    if (amt <= this.balance) {
-      this.transactions.push(newCharge);
-    } else {
-      console.log("No Funds!");
-    }
+    this.transactions.push(
+      new Transaction(
+        new Transaction(this.accountNumber, this.owner, payee, amt)
+      )
+    );
   }
 }
-class Transaction {
-  constructor(amt, payee) {
-    this.amount = amt;
+class Transaction extends bankAccount {
+  constructor(accountNumber, owner, payee, amount) {
+    super(accountNumber, owner);
+    this.amount = amount;
     this.payee = payee;
     this.date = new Date();
   }
 }
 
-const mainAccount = new bankAccount("xxx4680", "G");
-console.log(mainAccount.balance());
-mainAccount.deposit(50);
-console.log("After Deposit", mainAccount.balance());
-
+let mainAccount = new bankAccount("12345678", "Gabi Jones");
+console.log(mainAccount);
 mainAccount.deposit(3000);
+mainAccount.deposit(50);
 console.log(mainAccount.balance());
+console.log(mainAccount.charge("amazon", -250));
+console.log(mainAccount.transactions);
